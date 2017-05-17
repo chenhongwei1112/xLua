@@ -1,0 +1,97 @@
+-- Tencent is pleased to support the open source community by making xLua available.
+-- Copyright (C) 2016 THL A29 Limited, a Tencent company. All rights reserved.
+-- Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+-- http://opensource.org/licenses/MIT
+-- Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+local socket = require("socket")
+local host = "www.baidu.com"
+local file = "/"
+
+function start()
+	print("lua start...")
+
+	self:GetComponent("Button").onClick:AddListener(function()
+		-- local rapidjson = require('rapidjson')
+		-- local t = rapidjson.decode('{"a":123}')
+		-- print(t.a)
+		-- t.a = 456
+		-- local s = rapidjson.encode(t)
+		-- print('json', s)
+
+		local sproto = require "sproto"
+		local core = require "sproto.core"
+		local print_r = require "print_r"
+
+		local sp = sproto.parse [[
+		.Person {
+			name 0 : string
+			id 1 : integer
+			email 2 : string
+			.PhoneNumber {
+				number 0 : string
+				type 1 : integer
+			}
+			phone 3 : *PhoneNumber
+		}
+		.AddressBook {
+			person 0 : *Person(id)
+			others 1 : *Person
+		}
+		]]
+
+		-- core.dumpproto only for debug use
+		core.dumpproto(sp.__cobj)
+
+		local def = sp:default "Person"
+		print("default table for Person")
+		print_r(def)
+		print("--------------")
+
+		local ab = {
+			person = {
+				[10000] = {
+					name = "Alice",
+					id = 10000,
+					phone = {
+						{ number = "123456789" , type = 1 },
+						{ number = "87654321" , type = 2 },
+					}
+				},
+				[20000] = {
+					name = "Bob",
+					id = 20000,
+					phone = {
+						{ number = "01234567890" , type = 3 },
+					}
+				}
+			},
+			others = {
+				{
+					name = "Carol",
+					id = 30000,
+					phone = {
+						{ number = "9876543210" },
+					}
+				},
+			}
+		}
+
+		collectgarbage "stop"
+
+		local code = sp:encode("AddressBook", ab)
+		local addr = sp:decode("AddressBook", code)
+		print_r(addr)
+
+		-- -- 创建一个 TCP 连接，连接到 HTTP 连接的标准端口 -- 80 端口上
+		-- local sock = assert(socket.connect(host, 80))
+		-- sock:send("GET " .. file .. " HTTP/1.0\r\n\r\n")
+		-- repeat
+		--     -- 以 1K 的字节块来接收数据，并把接收到字节块输出来
+		--     local chunk, status, partial = sock:receive(1024)
+		--     print(chunk or partial)
+		-- until status ~= "closed"
+		-- -- 关闭 TCP 连接
+		-- sock:close()
+	end)
+end
