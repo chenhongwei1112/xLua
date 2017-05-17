@@ -1,0 +1,138 @@
+-- Tencent is pleased to support the open source community by making xLua available.
+-- Copyright (C) 2016 THL A29 Limited, a Tencent company. All rights reserved.
+-- Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+-- http://opensource.org/licenses/MIT
+-- Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+local socket = require( "socket" )
+local proto = require "proto"
+local sproto = require "sproto"
+
+
+local host = sproto.new(proto.s2c):host "package"
+local request = host:attach(sproto.new(proto.c2s))
+
+local fd
+
+local function send_package(fd, pack)
+	local package = string.pack(">s2", pack)
+	fd:send(package)
+end
+
+local function unpack_package(text)
+	local size = #text
+	if size < 2 then
+		return nil, text
+	end
+	local s = text:byte(1) * 256 + text:byte(2)
+	if size < s+2 then
+		return nil, text
+	end
+
+	return text:sub(3,2+s), text:sub(3+s)
+end
+
+local function recv_package(last)
+	local result
+	result, last = unpack_package(last)
+	if result then
+		return result, last
+	end
+	--local r = socket.recv(fd)
+	local r = fd:receive(4096)
+	print("AAAAAAAAAAAAAAAAAAAA", r)
+	if not r then
+		return nil, last
+	end
+	if r == "" then
+		error "Server closed"
+	end
+	return unpack_package(last .. r)
+end
+
+local session = 0
+
+local function send_request(name, args)
+	session = session + 1
+	local str = request(name, args, session)
+	send_package(fd, str)
+	print("Request:", session)
+end
+
+local last = ""
+
+local function print_request(name, args)
+	print("REQUEST", name)
+	if args then
+		for k,v in pairs(args) do
+			print(k,v)
+		end
+	end
+end
+
+local function print_response(session, args)
+	print("RESPONSE", session)
+	if args then
+		for k,v in pairs(args) do
+			print(k,v)
+		end
+	end
+end
+
+local function print_package(t, ...)
+	if t == "REQUEST" then
+		print_request(...)
+	else
+		assert(t == "RESPONSE")
+		print_response(...)
+	end
+end
+
+local function dispatch_package()
+	while true do
+		local v
+		v, last = recv_package(last)
+		if not v then
+			break
+		end
+
+		print_package(host:dispatch(v))
+	end
+end
+
+function start()
+	print("lua start...")
+
+	fd = assert(socket.connect("192.168.1.102", 8888))
+	fd:settimeout(0)
+
+	ButtonSend:GetComponent("Button").onClick:AddListener(function()
+		print("1111111111111111111111111")
+		send_request("foobar", { what = "BBBB" })
+	end)
+
+	ButtonDisconnect:GetComponent("Button").onClick:AddListener(function()
+		print("2222222222222222222222222")
+		fd:close()
+	end)
+
+	ButtonConnect:GetComponent("Button").onClick:AddListener(function()
+		print("333333333333333333333333333333333")
+	end)
+
+	ButtonRecv:GetComponent("Button").onClick:AddListener(function()
+		print("44444444444444444444444444444444444444")
+	end)
+
+	ButtonTest:GetComponent("Button").onClick:AddListener(function()
+		print("55555555555555555555555555555555555555")
+	end)
+end
+
+function update()
+end
+
+function ondestroy()
+    print("lua destroy")
+    fd:close()
+end
