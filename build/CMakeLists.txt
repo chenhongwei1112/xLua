@@ -44,14 +44,17 @@ set (THIRDPART_SRC ${THIRDPART_SRC} ${RAPIDJSON_SRC})
 #end lua-rapidjson
 
 #begin sproto
-set (SPROTO_SRC sproto/source/lsproto.c sproto/source/sproto.c)
+set (SPROTO_SRC 
+    sproto/lsproto.c 
+    sproto/sproto.c
+)
 set_property(
     SOURCE ${SPROTO_SRC}
     APPEND
     PROPERTY COMPILE_DEFINITIONS
     LUA_LIB
 )
-list(APPEND THIRDPART_INC  sproto/include)
+list(APPEND THIRDPART_INC  sproto)
 set (THIRDPART_SRC ${THIRDPART_SRC} ${SPROTO_SRC})
 #end sproto
 
