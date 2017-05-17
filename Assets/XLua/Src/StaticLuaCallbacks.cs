@@ -561,6 +561,18 @@ namespace XLua
             return LuaAPI.luaopen_rapidjson(L);
         }
 
+        [MonoPInvokeCallback(typeof(LuaDLL.lua_CSFunction))]
+        internal static int LoadLpeg(RealStatePtr L)
+        {
+            return LuaAPI.luaopen_lpeg(L);
+        }
+
+        [MonoPInvokeCallback(typeof(LuaDLL.lua_CSFunction))]
+        internal static int LoadSproto(RealStatePtr L)
+        {
+            return LuaAPI.luaopen_sproto_core(L);
+        }
+
         [MonoPInvokeCallback(typeof(LuaCSFunction))]
         internal static int LoadBuiltinLib(RealStatePtr L)
         {

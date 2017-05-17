@@ -43,7 +43,35 @@ list(APPEND THIRDPART_INC  lua-rapidjson/include)
 set (THIRDPART_SRC ${THIRDPART_SRC} ${RAPIDJSON_SRC})
 #end lua-rapidjson
 
+#begin sproto
+set (SPROTO_SRC sproto/source/lsproto.c sproto/source/sproto.c)
+set_property(
+    SOURCE ${SPROTO_SRC}
+    APPEND
+    PROPERTY COMPILE_DEFINITIONS
+    LUA_LIB
+)
+list(APPEND THIRDPART_INC  sproto/include)
+set (THIRDPART_SRC ${THIRDPART_SRC} ${SPROTO_SRC})
+#end sproto
 
+#begin lpeg
+set ( LPEG_SRC
+    lpeg/lpcap.c
+    lpeg/lpcode.c
+    lpeg/lpprint.c
+    lpeg/lptree.c
+    lpeg/lpvm.c
+)
+set_property(
+    SOURCE ${LPEG_SRC}
+    APPEND
+    PROPERTY COMPILE_DEFINITIONS
+    LUA_LIB
+)
+list(APPEND THIRDPART_INC  lpeg)
+set (THIRDPART_SRC ${THIRDPART_SRC} ${LPEG_SRC})
+#end lpeg
 
 if (USING_LUAJIT)
 	
