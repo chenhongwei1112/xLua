@@ -92,14 +92,33 @@ local function dispatch_package()
 	end
 end
 
+local INVOKE_TYPE = {}
+INVOKE_TYPE.DELAY = 1
+INVOKE_TYPE.REPEAT = 2
+
+--注册回调
+local invoke_list = {}
+function regist(func, time, type)
+	local func_data = {func = func, time = time, type = type or INVOKE_TYPE.DELAY, curTime = 0}
+	invoke_list[func_data] = func_data
+end
+
 function connectCallBack()
 	local result, err = fd:connect("192.168.1.102", 8888)
 	if err == "already connected" then
 		NetState:GetComponent("Text").text = "已连接"
+		regist(checkNetState, 5, INVOKE_TYPE.REPEAT)
 	elseif err == "timeout" then
 		NetState:GetComponent("Text").text = "连接超时"
 	elseif err == "Operation already in progress" then
 		NetState:GetComponent("Text").text = "连接中"
+	end
+end
+
+function checkNetState()
+	local _, status = fd:send("*l")
+	if status == "closed" then
+		NetState:GetComponent("Text").text = "连接断开"
 	end
 end
 
@@ -119,7 +138,7 @@ function start()
 		fd = socket.tcp()
 		fd:settimeout(0)
 		fd:connect("192.168.1.102", 8888)
-		-- self:Invoke("connectCallBack", 1)
+		regist(connectCallBack, 1)	
 	end)
 
 	ButtonRecv:GetComponent("Button").onClick:AddListener(function()
@@ -127,15 +146,38 @@ function start()
 	end)
 
 	ButtonTest:GetComponent("Button").onClick:AddListener(function()
-		print("55555555555555555555555555555555555555")
+		regist(function ( ... )
+			print("@@@@@@@@@@@@@@@@@@")
+		end, 1, INVOKE_TYPE.REPEAT)
 	end)
 end
 
 function update()
 	dispatch_package()
+	doInvoke()
+end
+
+function doInvoke()
+	for k, v in pairs( invoke_list ) do
+		if v.type == INVOKE_TYPE.DELAY then
+			v.time = v.time - CS.UnityEngine.Time.deltaTime
+			if v.time <= 0 then
+				v.func()
+				invoke_list[k] = nil
+			end
+		else
+			v.curTime = v.curTime + CS.UnityEngine.Time.deltaTime
+			if v.curTime >= v.time then
+				v.func()
+				v.curTime = 0
+			end
+		end
+	end
 end
 
 function ondestroy()
     print("lua destroy")
-    fd:close()
+    if fd then
+    	fd:close()
+    end
 end
