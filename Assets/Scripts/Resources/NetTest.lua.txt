@@ -43,23 +43,18 @@ end
 
 local session = 0
 
+local cacheSessions = {}
 local function send_request(name, args)
 	session = session + 1
 	local str = request(name, args, session)
 	send_package(fd, str)
 	print("Request:", session)
+	cacheSessions[session] = name
 end
 
 local last = ""
 
-local function print_request(name, args)
-	print("REQUEST", name)
-	if args then
-		for k,v in pairs(args) do
-			print(k,v)
-		end
-	end
-
+local function process_request(name, args)
 	local func = MsgFunc[name]
 	if not func then
 		return
@@ -67,21 +62,27 @@ local function print_request(name, args)
 	func(args)
 end
 
-local function print_response(session, args)
-	print("RESPONSE", session)
-	if args then
-		for k,v in pairs(args) do
-			print(k,v)
-		end
+local function process_response(session, args)
+	local name = cacheSessions[session]
+	if not name then
+		print("ERROR SESSION")
+		return
 	end
+	local func = MsgFunc[name]
+	if not func then
+		print("NO FUNC FOUND FOR MSG:", name)
+		return
+	end
+	func(args)
+	cacheSessions[session] = nil
 end
 
-local function print_package(t, ...)
+local function process_package(t, ...)
 	if t == "REQUEST" then
-		print_request(...)
+		process_request(...)
 	else
 		assert(t == "RESPONSE")
-		print_response(...)
+		process_response(...)
 	end
 end
 
@@ -96,7 +97,7 @@ local function dispatch_package()
 			break
 		end
 
-		print_package(host:dispatch(v))
+		process_package(host:dispatch(v))
 	end
 end
 

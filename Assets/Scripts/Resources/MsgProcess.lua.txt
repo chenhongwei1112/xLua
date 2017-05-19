@@ -4,4 +4,10 @@ MsgFunc.heartbeat = function ( args )
 	print("1111111111111111111111111111")
 end
 
+MsgFunc.foobar = function ( args )
+	if args.ok > 10 then
+		print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%", args.ok)
+	end
+end
+
 return MsgFunc
