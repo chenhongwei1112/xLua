@@ -7,6 +7,8 @@ local request = host:attach(sproto.new(proto.c2s))
 
 local fd
 
+local MsgFunc = require( "MsgProcess" )
+
 local function send_package(fd, pack)
 	local package = string.pack(">s2", pack)
 	fd:send(package)
@@ -57,6 +59,12 @@ local function print_request(name, args)
 			print(k,v)
 		end
 	end
+
+	local func = MsgFunc[name]
+	if not func then
+		return
+	end
+	func(args)
 end
 
 local function print_response(session, args)
@@ -103,35 +111,38 @@ function regist(func, time, type)
 	invoke_list[func_data] = func_data
 end
 
+local Text_NetState
 function connectCallBack()
 	local result, err = fd:connect("192.168.1.102", 8888)
 	if err == "already connected" then
-		NetState:GetComponent("Text").text = "已连接"
+		Text_NetState.text = "已连接"
 		regist(checkNetState, 5, INVOKE_TYPE.REPEAT)
 	elseif err == "timeout" then
-		NetState:GetComponent("Text").text = "连接超时"
+		Text_NetState.text = "连接超时"
 	elseif err == "Operation already in progress" then
-		NetState:GetComponent("Text").text = "连接中"
+		Text_NetState.text = "连接中"
 	end
 end
 
 function checkNetState()
-	local _, status = fd:send("*l")
-	if status == "closed" then
-		NetState:GetComponent("Text").text = "连接断开"
-	end
+	-- local _, status = fd:send("AAA")
+	-- if status == "closed" then
+	-- 	Text_NetState.text = "连接断开"
+	-- end
 end
+
+
 
 function start()
 	print("lua start...")
-
+	Text_NetState = NetState:GetComponent("Text")
 	ButtonSend:GetComponent("Button").onClick:AddListener(function()
 		send_request("foobar", { what = "BBBB" })
 	end)
 
 	ButtonDisconnect:GetComponent("Button").onClick:AddListener(function()
 		fd:close()
-		NetState:GetComponent("Text").text = "连接断开"
+		Text_NetState.text = "连接断开"
 	end)
 
 	ButtonConnect:GetComponent("Button").onClick:AddListener(function()

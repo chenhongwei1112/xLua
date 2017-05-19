@@ -1,0 +1,7 @@
+local MsgFunc = {}
+
+MsgFunc.heartbeat = function ( args )
+	print("1111111111111111111111111111")
+end
+
+return MsgFunc
