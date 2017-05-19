@@ -1,13 +1,11 @@
 local MsgFunc = {}
 
 MsgFunc.heartbeat = function ( args )
-	print("1111111111111111111111111111")
+	print("--------------- heartbeat --------------------")
 end
 
 MsgFunc.foobar = function ( args )
-	if args.ok > 10 then
-		print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%", args.ok)
-	end
+	print("--------------- foobar --------------------")
 end
 
 return MsgFunc
