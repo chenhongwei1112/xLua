@@ -32,7 +32,31 @@ set 3 {
 
 quit 4 {}
 
-foobar 5 {
+addMoney 5{
+  request {
+    money 0 : integer
+  }
+  response {
+    money 0 : integer
+  }
+}
+
+.ItemInfo{
+  id 0 : integer
+  param1 1 : integer
+  param2 2 : string
+}
+
+jinglian 6{
+  request {
+    items 0 : *ItemInfo
+  }
+  response {
+    items 0 : *ItemInfo
+  }
+}
+
+foobar 7 {
   request {
     what 0 : string
   }
