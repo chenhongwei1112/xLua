@@ -156,7 +156,6 @@ function start()
 	end)
 
 	ButtonRecv:GetComponent("Button").onClick:AddListener(function()
-		print("44444444444444444444444444444444444444",fd:send("*l"))
 	end)
 
 	ButtonTest:GetComponent("Button").onClick:AddListener(function()
