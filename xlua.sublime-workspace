@@ -1,0 +1,396 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"connect",
+				"connections"
+			],
+			[
+				"cor",
+				"coroutine_resume( co, val1, ... )"
+			],
+			[
+				"co",
+				"coroutine_create( f )"
+			],
+			[
+				"cour",
+				"coroutine_yield( ... )"
+			],
+			[
+				"func",
+				"function\tfunction"
+			],
+			[
+				"for",
+				"forp\tfor k, v in pairs()"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 150.0,
+		"last_filter": "syntaxlua",
+		"selected_items":
+		[
+			[
+				"syntaxlua",
+				"Set Syntax: Lua"
+			],
+			[
+				"syntaxlu",
+				"Set Syntax: LuaExtended"
+			],
+			[
+				"syntax mak",
+				"Set Syntax: Makefile"
+			],
+			[
+				"sytaxlua",
+				"Set Syntax: LuaExtended"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				":w",
+				":w - Save"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"isntal",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 432.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/chenhw/code/unity_skynet/xLua/Assets/Scripts",
+		"/D/chenhw/code/unity_skynet/xLua/Assets/Scripts/Resources"
+	],
+	"file_history":
+	[
+		"/D/chenhw/code/unity_skynet/xLua/Assets/Scripts/Resources/proto.lua.txt",
+		"/D/chenhw/code/skynet/Test.lua",
+		"/D/chenhw/code/skynet/examples/client.lua",
+		"/D/chenhw/code/unity_skynet/xLua/build/sproto/source/sproto.c",
+		"/D/chenhw/code/skynet/examples/proto.lua",
+		"/D/chenhw/code/unity_skynet/xLua/build/CMakeLists.txt",
+		"/D/chenhw/code/skynet/lualib/sproto.lua",
+		"/D/chenhw/code/skynet/HISTORY.md",
+		"/D/chenhw/code/unity_skynet/xLua/build/sproto/source/lsproto.c",
+		"/D/chenhw/code/skynet/3rd/lua/lparser.c",
+		"/D/chenhw/code/skynet/lualib/sprotoparser.lua",
+		"/D/chenhw/code/unity_skynet/xLua/Assets/Scripts/Resources/sproto.lua.txt",
+		"/D/chenhw/code/unity_skynet/xLua/Assets/Scripts/Resources/TestClick.lua.txt",
+		"/D/chenhw/code/unity_skynet/xLua/Assets/Scripts/TestClick.lua.txt",
+		"/D/chenhw/code/unity_skynet/SuperSocket.ClientEngine/README.md",
+		"/D/chenhw/code/unity_skynet/TestSproto_01/Assets/Scripts/gen_example/TestDecAndBinary.sproto",
+		"/D/chenhw/code/unity_skynet/TestSproto_01/Assets/Scripts/gen_example/TestRpc.sproto",
+		"/D/chenhw/code/skynet/examples/agent.lua",
+		"/D/chenhw/code/unity_skynet/TestXLua/Assets/Scripts/TestClick.lua.txt",
+		"/D/chenhw/code/skynet/examples/simpledb.lua",
+		"/D/chenhw/code/skynet/examples/main.lua",
+		"/D/chenhw/code/unity_skynet/TestSproto_01/Assets/Scripts/gen_example/TestAll.sproto",
+		"/D/chenhw/code/unity_skynet/TestSproto_01/Assets/Scripts/gen_example/Member.sproto",
+		"/D/chenhw/code/unity_skynet/TestSproto_01/Assets/Scripts/gen_example/TestMap.sproto",
+		"/D/chenhw/code/skynet/examples/myservice03.lua",
+		"/D/chenhw/code/skynet/examples/myservice1.lua",
+		"/D/chenhw/code/skynet/examples/testservice.lua",
+		"/D/chenhw/code/skynet/service/gate.lua",
+		"/D/chenhw/code/skynet/examples/myservice2.lua",
+		"/D/chenhw/Download/mysql-5.7.17-winx64/mysql-5.7.17-winx64/README",
+		"/D/chenhw/code/mysql-5.7.17-winx64/my.ini",
+		"/D/chenhw/Download/mysql-5.7.17-winx64/mysql-5.7.17-winx64/my.ini",
+		"/D/chenhw/code/skynet/test/testredis.lua",
+		"/D/chenhw/code/skynet/lualib/redis.lua",
+		"/D/chenhw/code/skynet/sftp-config.json",
+		"/D/chenhw/code/skynet/service/debug_console.lua",
+		"/D/chenhw/code/skynet/lualib/cluster.lua",
+		"/C/Users/chenh/Desktop/functions.lua",
+		"/D/chenhw/code/cocos/cocos2d-x-3.6/projects/cpp_empty_test/src/cocos/cocos2d/functions.lua",
+		"/F/resharper/1111/Products.json"
+	],
+	"find":
+	{
+		"height": 27.0
+	},
+	"find_in_files":
+	{
+		"height": 102.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"heartbeat",
+			"heart_beat",
+			"CACHE_SIZE",
+			"fd",
+			"dispatch_package",
+			"CACHE_SIZE",
+			"recv",
+			"connectons",
+			"receive",
+			"SPROTO_SRC",
+			"luaopen_lpeg",
+			"luaopen",
+			"RAPIDJSON",
+			"RAPIDJSON_SRC",
+			"RAPIDJSON",
+			"rapidjson",
+			"RAPIDJSON",
+			"RAPIDJSON_SRC",
+			"RAPIDJSON",
+			"lua-rapidjson",
+			"set_property",
+			"XLUA_CORE",
+			"LUA_SOCKET",
+			"luasocket",
+			"MARK_AS_ADVANCED",
+			"simpledb",
+			"SET",
+			"get",
+			"simpledb",
+			"handshake"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 44.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 134.0
+	},
+	"pinned_build_system": "",
+	"project": "xlua.sublime-project",
+	"replace":
+	{
+		"height": 50.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"agent",
+				"D:\\chenhw\\code\\skynet\\examples\\agent.lua"
+			],
+			[
+				"pto",
+				"D:\\chenhw\\code\\skynet\\examples\\proto.lua"
+			],
+			[
+				"clientsocket",
+				"skynet\\lualib-src\\lua-clientsocket.c"
+			],
+			[
+				"clientlua",
+				"skynet\\examples\\client.lua"
+			],
+			[
+				"client",
+				"skynet\\lualib-src\\lua-clientsocket.c"
+			],
+			[
+				"proto",
+				"skynet\\examples\\proto.lua"
+			],
+			[
+				"sprotoparser",
+				"skynet\\lualib\\sprotoparser.lua"
+			],
+			[
+				"sprot",
+				"skynet\\lualib\\sproto.lua"
+			],
+			[
+				"sproto",
+				"skynet\\lualib\\sproto.lua"
+			],
+			[
+				"gate.lua",
+				"skynet\\service\\gate.lua"
+			],
+			[
+				"simpledb",
+				"skynet\\examples\\simpledb.lua"
+			],
+			[
+				"myse",
+				"skynet\\examples\\myservice03.lua"
+			],
+			[
+				"myser",
+				"skynet\\examples\\myservice2.lua"
+			],
+			[
+				"testse",
+				"skynet\\examples\\testservice.lua"
+			],
+			[
+				"myservice1",
+				"skynet\\examples\\myservice1.lua"
+			],
+			[
+				"mainlu",
+				"skynet\\examples\\main.lua"
+			],
+			[
+				"mian.lua",
+				"skynet\\examples\\main.lua"
+			],
+			[
+				"testre",
+				"test\\testredis.lua"
+			],
+			[
+				"debug",
+				"service\\debug_console.lua"
+			],
+			[
+				"redi",
+				"lualib\\redis.lua"
+			],
+			[
+				"main",
+				"examples\\main.lua"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 192.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
