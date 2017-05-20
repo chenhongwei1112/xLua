@@ -132,7 +132,9 @@ function checkNetState()
 	-- end
 end
 
-
+require "functions"
+local Circle = require "Circle"
+local Rectangle = require "Rectangle"
 
 function start()
 	print("lua start...")
@@ -158,9 +160,16 @@ function start()
 	end)
 
 	ButtonTest:GetComponent("Button").onClick:AddListener(function()
-		regist(function ( ... )
-			print("@@@@@@@@@@@@@@@@@@")
-		end, 1, INVOKE_TYPE.REPEAT)
+		-- regist(function ( ... )
+		-- 	print("@@@@@@@@@@@@@@@@@@")
+		-- end, 1, INVOKE_TYPE.REPEAT)
+
+		local circle = Circle.new()             -- 输出: Shape:ctor(circle)
+		circle:setRadius(200)
+		circle:draw()                           -- 输出: draw circle, radius = 200.00
+
+		local rectangle = Rectangle.new()       -- 输出: Shape:ctor(rectangle)
+		rectangle:draw()                        -- 输出: draw rectangle
 	end)
 end
 
