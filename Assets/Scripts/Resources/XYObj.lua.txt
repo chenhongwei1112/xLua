@@ -1,0 +1,44 @@
+local INVOKE_TYPE = {}
+INVOKE_TYPE.DELAY 	= 1
+INVOKE_TYPE.REPEAT 	= 2
+
+local CurObj = class("XYObj")
+
+function CurObj:ctor(CurObjName)
+	self.invoke_list = {}
+end
+
+function CurObj:registui()
+end
+
+function CurObj:invoke(func, time, type)
+	local func_data = {func = func, time = time, type = type or INVOKE_TYPE.DELAY, curTime = 0}
+	self.invoke_list[func_data] = func_data
+end
+
+function CurObj:doInvoke()
+	for k, v in pairs( self.invoke_list ) do
+		if v.type == INVOKE_TYPE.DELAY then
+			v.time = v.time - CS.UnityEngine.Time.deltaTime
+			if v.time <= 0 then
+				v.func()
+				self.invoke_list[k] = nil
+			end
+		else
+			v.curTime = v.curTime + CS.UnityEngine.Time.deltaTime
+			if v.curTime >= v.time then
+				v.func()
+				v.curTime = 0
+			end
+		end
+	end
+end
+
+function CurObj:update()
+	self:doInvoke()
+end
+
+function CurObj:ondestroy()
+end
+
+return CurObj

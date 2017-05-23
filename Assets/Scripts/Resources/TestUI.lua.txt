@@ -1,0 +1,60 @@
+require "config"
+require "init"
+
+local XYObj = require( "XYObj" )
+local CurObj = class("CurObj", XYObj)
+
+function CurObj:ctor()
+    CurObj.super.ctor(self, "curObj")
+end
+
+function CurObj:registui()
+    self.Test_value = 100
+	self.Text_NetState = NetState:GetComponent("Text")
+	self.Text_RecvData = TextRecvData:GetComponent("Text")
+	ButtonSend:GetComponent("Button").onClick:AddListener(function()
+		send_request("foobar", { what = "BBBB" })
+	end)
+
+	ButtonDisconnect:GetComponent("Button").onClick:AddListener(function()
+		fd:close()
+		Text_NetState.text = "连接断开"
+	end)
+
+	ButtonConnect:GetComponent("Button").onClick:AddListener(function()
+		NetMgr.connect()
+	end)
+
+	ButtonRecv:GetComponent("Button").onClick:AddListener(function()
+	end)
+
+	ButtonTest:GetComponent("Button").onClick:AddListener(function()
+		self:invoke(function ()
+			print("55455243562355")
+		end, 1)
+	end)
+end
+
+function CurObj:changeStateText()
+	self.Text_NetState.text = "3333333333333333333333333"
+end
+
+function CurObj:ondestroy()
+
+end
+
+
+------------------------------c#中的回调-------------------------------------------------
+local curObj
+function start()
+	curObj = CurObj.new() 
+	curObj:registui()
+end
+
+function update()
+	curObj:update()
+end
+
+function ondestroy()
+	curObj:ondestroy()
+end

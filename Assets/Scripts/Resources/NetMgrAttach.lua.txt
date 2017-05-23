@@ -1,0 +1,11 @@
+function start()
+	print("WWWWWWWWWWWWWWWWWWW", Text_NetState)
+end
+
+function update()
+	NetMgr.upate()
+end
+
+function ondestroy()
+    NetMgr.disconnect()
+end

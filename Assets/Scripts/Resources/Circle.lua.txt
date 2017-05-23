@@ -19,5 +19,17 @@ function Circle:draw()
     printf("draw %s, raidus = %0.2f", self.shapeName, self.radius)
 end
 
+function start()
+
+end
+
+function update()
+
+end
+
+function ondestroy()
+    print("lua destroy")
+end
+
 return Circle
 
