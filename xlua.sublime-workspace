@@ -31,6 +31,24 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "Assets/Scripts/Resources/NetTest.lua.txt",
+			"settings":
+			{
+				"buffer_size": 4313,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Assets/XLua/Doc/faq.md",
+			"settings":
+			{
+				"buffer_size": 5664,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -108,8 +126,8 @@
 	},
 	"expanded_folders":
 	[
-		"/D/chenhw/code/unity_skynet/xLua/Assets/Scripts",
-		"/D/chenhw/code/unity_skynet/xLua/Assets/Scripts/Resources"
+		"/E/code/xLua/Assets/Scripts",
+		"/E/code/xLua/Assets/Scripts/Resources"
 	],
 	"file_history":
 	[
@@ -156,7 +174,7 @@
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -218,8 +236,72 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "Assets/Scripts/Resources/NetTest.lua.txt",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 4313,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1223,
+								1223
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 684.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Assets/XLua/Doc/faq.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5664,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4713,
+								4716
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Markdown/Markdown.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 3128.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
 			]
 		}
 	],
