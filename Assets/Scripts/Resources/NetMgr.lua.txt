@@ -119,12 +119,16 @@ local XYObj = require( "XYObj" )
 local CurObj = class("CurObj", XYObj)
 
 function CurObj:ctor()
-    CurObj.super.ctor(self, "curObj")
+    CurObj.super.ctor(self, "NetMgr")
 end
 
 function CurObj:update()
 	CurObj.super.update(self)
 	dispatch_package()
+end
+
+function CurObj:send_request(...)
+	send_request(...)
 end
 
 function CurObj:disconnect()

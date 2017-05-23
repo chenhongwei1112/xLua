@@ -1,2 +1,4 @@
 require "globalValue"
 require "functions"
+
+ObjMgr = require "ObjMgr"

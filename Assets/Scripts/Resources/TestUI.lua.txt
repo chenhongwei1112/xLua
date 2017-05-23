@@ -2,7 +2,7 @@ local XYObj = require( "XYObj" )
 local CurObj = class("CurObj", XYObj)
 
 function CurObj:ctor()
-    CurObj.super.ctor(self, "curObj")
+    CurObj.super.ctor(self, "TestUI")
 end
 
 function CurObj:registui()
@@ -10,7 +10,7 @@ function CurObj:registui()
 	self.Text_NetState = NetState:GetComponent("Text")
 	self.Text_RecvData = TextRecvData:GetComponent("Text")
 	ButtonSend:GetComponent("Button").onClick:AddListener(function()
-		send_request("foobar", { what = "BBBB" })
+		NetMgr:send_request("foobar", { what = "BBBB" })
 	end)
 
 	ButtonDisconnect:GetComponent("Button").onClick:AddListener(function()
@@ -39,7 +39,6 @@ end
 function CurObj:ondestroy()
 
 end
-
 
 ------------------------------c#中的回调-------------------------------------------------
 local curObj

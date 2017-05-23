@@ -5,6 +5,7 @@ local CurObj = class("XYObj")
 
 function CurObj:ctor(CurObjName)
 	self.invoke_list = {}
+	ObjMgr.addUI(CurObjName, self)
 end
 
 function CurObj:registui()

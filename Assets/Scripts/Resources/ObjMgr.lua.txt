@@ -1,0 +1,12 @@
+local CurObj = {}
+
+local ui_list = {}
+function CurObj.addUI(name, ui)
+	ui_list[name] = ui
+end
+
+function CurObj.getUI(name)
+	return ui_list[name]
+end
+
+return CurObj
