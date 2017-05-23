@@ -6,7 +6,7 @@ end
 
 MsgFunc.foobar = function ( args )
 	print("--------------- foobar --------------------")
-	ObjMgr.getUI("TestUI"):changeStateText()
+	ObjMgr.getUI("TestUI"):changeDataText("foobar")
 end
 
 return MsgFunc

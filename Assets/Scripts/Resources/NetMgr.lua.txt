@@ -89,13 +89,13 @@ end
 function connectCallBack()
 	local result, err = fd:connect(SERVER_IP, SERVER_PORT)
 	if result == 1.0 then
-		print("AAAAAAAAAAAAAAAAA", "已连接")
+		ObjMgr.getUI("TestUI"):changeStateText("已连接")
 	elseif err == "already connected" then
-		print("AAAAAAAAAAAAAAAAA", "已连接")
+		ObjMgr.getUI("TestUI"):changeStateText("已连接")
 	elseif err == "timeout" then
-		print("AAAAAAAAAAAAAAAAA", "连接超时")
+		ObjMgr.getUI("TestUI"):changeStateText("连接超时")
 	elseif err == "Operation already in progress" then
-		print("AAAAAAAAAAAAAAAAA", "连接中")
+		ObjMgr.getUI("TestUI"):changeStateText("连接中")
 	end
 end
 

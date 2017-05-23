@@ -32,8 +32,12 @@ function CurObj:registui()
 	end)
 end
 
-function CurObj:changeStateText()
-	self.Text_NetState.text = "3333333333333333333333333"
+function CurObj:changeStateText(str)
+	self.Text_NetState.text = str
+end
+
+function CurObj:changeDataText(str)
+	self.Text_RecvData.text = str
 end
 
 function CurObj:ondestroy()
