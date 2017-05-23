@@ -1,6 +1,3 @@
-require "config"
-require "init"
-
 local XYObj = require( "XYObj" )
 local CurObj = class("CurObj", XYObj)
 
@@ -22,7 +19,7 @@ function CurObj:registui()
 	end)
 
 	ButtonConnect:GetComponent("Button").onClick:AddListener(function()
-		NetMgr.connect()
+		NetMgr:connect()
 	end)
 
 	ButtonRecv:GetComponent("Button").onClick:AddListener(function()

@@ -1,6 +1,5 @@
-local INVOKE_TYPE = {}
-INVOKE_TYPE.DELAY 	= 1
-INVOKE_TYPE.REPEAT 	= 2
+require "config"
+require "init"
 
 local CurObj = class("XYObj")
 

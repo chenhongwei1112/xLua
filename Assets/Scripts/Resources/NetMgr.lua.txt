@@ -1,10 +1,3 @@
-local NetMgr = {}
-local invoke_list = {}
-
-local INVOKE_TYPE = {}
-INVOKE_TYPE.DELAY 	= 1
-INVOKE_TYPE.REPEAT 	= 2
-
 local socket = require "socket"
 local proto = require "proto"
 local sproto = require "sproto"
@@ -93,31 +86,6 @@ local function process_package(t, ...)
 	end
 end
 
---注册回调
-function NetMgr.regist(func, time, type)
-	local func_data = {func = func, time = time, type = type or INVOKE_TYPE.DELAY, curTime = 0}
-	invoke_list[func_data] = func_data
-end
-
-function NetMgr.doInvoke()
-	for k, v in pairs( invoke_list ) do
-		if v.type == INVOKE_TYPE.DELAY then
-			v.time = v.time - CS.UnityEngine.Time.deltaTime
-			if v.time <= 0 then
-				v.func()
-				invoke_list[k] = nil
-			end
-		else
-			v.curTime = v.curTime + CS.UnityEngine.Time.deltaTime
-			if v.curTime >= v.time then
-				v.func()
-				v.curTime = 0
-			end
-		end
-	end
-end
-
-local Text_NetState
 function connectCallBack()
 	local result, err = fd:connect(SERVER_IP, SERVER_PORT)
 	if result == 1.0 then
@@ -131,7 +99,7 @@ function connectCallBack()
 	end
 end
 
-function NetMgr.dispatch_package()
+local function dispatch_package()
 	if not fd then
 		return
 	end
@@ -144,25 +112,50 @@ function NetMgr.dispatch_package()
 
 		process_package(host:dispatch(v))
 	end
-
 end
 
-function NetMgr.upate()
-	NetMgr.dispatch_package()
-	NetMgr.doInvoke()
+-----------------------------------------------------------
+local XYObj = require( "XYObj" )
+local CurObj = class("CurObj", XYObj)
+
+function CurObj:ctor()
+    CurObj.super.ctor(self, "curObj")
 end
 
-function NetMgr.connect()
-	fd = socket.tcp()
-	fd:settimeout(0)
-	fd:connect(SERVER_IP, SERVER_PORT)
-	NetMgr.regist(connectCallBack, 1, INVOKE_TYPE.DELAY)	
+function CurObj:update()
+	CurObj.super.update(self)
+	dispatch_package()
 end
 
-function NetMgr.disconnect()
+function CurObj:disconnect()
 	if fd then
     	fd:close()
     end
 end
 
-return NetMgr
+function CurObj:connect()
+	fd = socket.tcp()
+	fd:settimeout(0)
+	fd:connect(SERVER_IP, SERVER_PORT)
+	self:invoke(connectCallBack, 1, INVOKE_TYPE.DELAY)	
+end
+
+function CurObj:ondestroy()
+	self:disconnect()	
+end
+------------------------------c#中的回调-------------------------------------------------
+local curObj
+function start()
+	curObj = CurObj.new() 
+	curObj:registui()
+	_G.NetMgr = curObj
+end
+
+function update()
+	curObj:update()
+end
+
+function ondestroy()
+	curObj:ondestroy()
+end
+

@@ -1,3 +1,2 @@
+require "globalValue"
 require "functions"
-
-NetMgr = require "NetMgr"
