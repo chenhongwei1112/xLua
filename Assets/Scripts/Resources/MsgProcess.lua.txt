@@ -9,4 +9,8 @@ MsgFunc.foobar = function ( args )
 	ObjMgr.getUI("TestUI"):changeDataText("foobar")
 end
 
+MsgFunc.login = function ( args )
+	print("--------------- login --------------------", args.ok)
+end
+
 return MsgFunc

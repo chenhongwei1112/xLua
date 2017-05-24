@@ -26,9 +26,7 @@ function CurObj:registui()
 	end)
 
 	ButtonTest:GetComponent("Button").onClick:AddListener(function()
-		self:invoke(function ()
-			print("55455243562355")
-		end, 1)
+		NetMgr:send_request("login", { username = "chenhw", pwd = "333" })
 	end)
 end
 
