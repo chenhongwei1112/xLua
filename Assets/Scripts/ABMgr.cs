@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using XLua;
 
@@ -26,19 +27,24 @@ public class ABMgr : MonoBehaviour
 
     IEnumerator Load(string path)
 	{
+        //加载本地资源
         //_createRequest = AssetBundle.Load(File.ReadAllBytes(path));
         //_createRequest = AssetBundle.LoadFromFileAsync(Path.Combine(Application.streamingAssetsPath, path));
         //yield return _createRequest;
         //AssetBundle bundle = _createRequest.assetBundle;
 
+        //使用UnityWebRequest加载资源，系统有bug
         //string uri = "file:///" + Application.streamingAssetsPath + "/" + path;
         //UnityEngine.Networking.UnityWebRequest request = UnityEngine.Networking.UnityWebRequest.GetAssetBundle(uri, 0);
         //LoadState.text = uri;
         //yield return request.Send();
         //AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
 
+        //从本地加载资源
         //var www = WWW.LoadFromCacheOrDownload(Application.streamingAssetsPath + "/" + path, 0);
-        var www = WWW.LoadFromCacheOrDownload("http://192.168.1.180:8080/ab001.ab", 0);
+        //从服务器加载资源
+        var www = WWW.LoadFromCacheOrDownload("http://192.168.1.180:8080/"+ path + ".ab", 0);
+
         yield return www;
         if (!string.IsNullOrEmpty(www.error))
         {
@@ -47,16 +53,20 @@ public class ABMgr : MonoBehaviour
         }
         AssetBundle bundle = www.assetBundle;
 
-        LoadState.text = "已加载";
-        _mPrefab = bundle.LoadAsset<GameObject>("cat");
+        //加载图片
+        //_mPrefab = bundle.LoadAsset<GameObject>("cat");
+        //var obj = Instantiate(_mPrefab, UiCanvas.transform);
+        //obj.GetComponent<Image>().rectTransform.localPosition = new Vector3(10, 10, 0);
 
-        var obj = Instantiate(_mPrefab, UiCanvas.transform);
-        obj.GetComponent<Image>().rectTransform.localPosition = new Vector3(10, 10, 0);
+        //加载场景
+        string[] scenePath = bundle.GetAllScenePaths();
+        var async = SceneManager.LoadSceneAsync(System.IO.Path.GetFileNameWithoutExtension(scenePath[0]));
+
     }
 
     public void LoadAssetBundle()
     {
-        StartCoroutine(Load("ab001"));
+        StartCoroutine(Load("newab001"));
     }
 
     public void Click(){
