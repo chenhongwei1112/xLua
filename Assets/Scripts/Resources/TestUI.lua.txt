@@ -28,6 +28,12 @@ function CurObj:registui()
 	ButtonTest:GetComponent("Button").onClick:AddListener(function()
 		NetMgr:send_request("login", { username = "chenhw", pwd = "333" })
 	end)
+
+	ButtonReload:GetComponent("Button").onClick:AddListener(function()
+		local GameObject = CS.UnityEngine.GameObject
+		local ABMgr = GameObject.Find('ABMgr'):GetComponent("ABMgr")
+		ABMgr:LoadAssetBundle()
+	end)
 end
 
 function CurObj:changeStateText(str)
