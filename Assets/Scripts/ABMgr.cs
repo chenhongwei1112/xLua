@@ -60,7 +60,7 @@ public class ABMgr : MonoBehaviour
 
         //加载场景
         string[] scenePath = bundle.GetAllScenePaths();
-        var async = SceneManager.LoadSceneAsync(System.IO.Path.GetFileNameWithoutExtension(scenePath[0]));
+        SceneManager.LoadSceneAsync(System.IO.Path.GetFileNameWithoutExtension(scenePath[0]));
 
     }
 
