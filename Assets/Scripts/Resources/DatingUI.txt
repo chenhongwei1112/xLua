@@ -1,0 +1,111 @@
+local XYObj = require( "XYObj" )
+local CurObj = class("DatingUI", XYObj)
+
+function CurObj:ctor()
+	self.mMoveSpeed = 60
+
+	self.ZouMgsList = {}
+	self.curIndex = 0
+
+    CurObj.super.ctor(self, "DatingUI")
+end
+
+function CurObj:registui()
+	ButtonSetting:GetComponent("Button").onClick:AddListener(function()
+		print("3333333333333333333333".."ButtonSetting")
+	end)
+
+	ButtonSendText:GetComponent("Button").onClick:AddListener(function()
+		print("3333333333333333333333".."ButtonSendTex")
+	end)
+
+	ButtonSendVoice:GetComponent("Button").onClick:AddListener(function()
+		print("3333333333333333333333".."ButtonSendVoice")
+	end)
+
+	ButtonBack:GetComponent("Button").onClick:AddListener(function()
+		print("3333333333333333333333".."ButtonBack")
+	end)
+
+	ButtonPlayMode:GetComponent("Button").onClick:AddListener(function()
+		print("3333333333333333333333".."ButtonPlayMode")
+	end)
+
+	ButtonWeixinFriend:GetComponent("Button").onClick:AddListener(function()
+		print("3333333333333333333333".."ButtonWeixinFriend")
+	end)
+
+	ButtonKillRoom:GetComponent("Button").onClick:AddListener(function()
+		print("4444444444444444444444".."ButtonKillRoom")
+		self:addOneZoumaMsg("11111111")
+	end)
+
+	self.TextRoomInfo = TextRoomInfo:GetComponent("Text")
+	self.TextPlayProgress = TextRoomInfo:GetComponent("Text")
+	self.TextZouma = TextZouma:GetComponent("Text")
+	self.Zoumamask = Zoumamask:GetComponent("RectTransform")
+
+	self.TextRoomInfo.text = "房间信息"
+	self.TextPlayProgress.text = "第?局"
+
+	self.invoke_zouma = self:invoke(function ()
+		self:updateZouma()
+	end, 0, INVOKE_TYPE.REPEAT)
+end
+
+function CurObj:addOneZoumaMsg(msgText)
+	local originNum = #self.ZouMgsList
+	table.insert(self.ZouMgsList, msgText)
+	if originNum == 0 then
+		self:startOneZouma()
+	end
+end
+
+function CurObj:startOneZouma()
+	self.curIndex = self.curIndex + 1
+	self.TextZouma.text = self.ZouMgsList[self.curIndex]
+	self.TextZouma:GetComponent("ContentSizeFitter"):SetLayoutHorizontal()
+	self.TextZouma.rectTransform.localPosition = CS.UnityEngine.Vector3(self.Zoumamask.rect.width,0,0)
+	self.endPosX = self.TextZouma.rectTransform.rect.width * -1
+end
+
+function CurObj:updateZouma()
+	if #self.ZouMgsList == 0 then
+		return
+	end
+
+	if self.TextZouma.rectTransform.localPosition.x < self.endPosX then
+		self:checkZoumaMsgQueue()
+		return
+	end
+	local r = CS.UnityEngine.Vector3.left * CS.UnityEngine.Time.deltaTime * self.mMoveSpeed
+	self.TextZouma.rectTransform:Translate(r)
+end
+
+function CurObj:checkZoumaMsgQueue()
+	if self.curIndex == #self.ZouMgsList then
+		self.curIndex = 0
+		self.ZouMgsList = {}
+		return
+	end
+	self:startOneZouma()
+end
+
+function CurObj:ondestroy()
+
+end
+
+------------------------------c#中的回调-------------------------------------------------
+local curObj
+function start()
+	curObj = CurObj.new() 
+	curObj:registui()
+end
+
+function update()
+	curObj:update()
+end
+
+function ondestroy()
+	curObj:ondestroy()
+end

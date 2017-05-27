@@ -1,0 +1,39 @@
+local XYObj = require( "XYObj" )
+local CurObj = class("LoginUI", XYObj)
+
+function CurObj:ctor()
+    CurObj.super.ctor(self, "LoginUI")
+end
+
+function CurObj:registui()
+	self.Button = ButtonLogin:GetComponent("Button")
+	self.Button.onClick:AddListener(function()
+		print("3333333333333333333333".."ButtonSetting")
+
+		CS.UnityEngine.SceneManagement.SceneManager.LoadScene("Dating")
+	end)
+
+	UserNote:GetComponent("Toggle").onValueChanged:AddListener(function(value)
+		self.Button.interactable = value
+	end)
+
+end
+
+function CurObj:ondestroy()
+
+end
+
+------------------------------c#中的回调-------------------------------------------------
+local curObj
+function start()
+	curObj = CurObj.new() 
+	curObj:registui()
+end
+
+function update()
+	curObj:update()
+end
+
+function ondestroy()
+	curObj:ondestroy()
+end

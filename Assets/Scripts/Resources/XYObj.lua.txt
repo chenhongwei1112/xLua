@@ -14,6 +14,7 @@ end
 function CurObj:invoke(func, time, type)
 	local func_data = {func = func, time = time, type = type or INVOKE_TYPE.DELAY, curTime = 0}
 	self.invoke_list[func_data] = func_data
+	return func_data
 end
 
 function CurObj:doInvoke()
@@ -32,6 +33,10 @@ function CurObj:doInvoke()
 			end
 		end
 	end
+end
+
+function CurObj:removeInvoke(invokeID)
+	self.invoke_list[invokeID] = nil
 end
 
 function CurObj:update()
