@@ -32,19 +32,10 @@
 	"buffers":
 	[
 		{
-			"file": "Assets/Scripts/Resources/NetTest.lua.txt",
+			"file": "Assets/Scripts/Resources/DatingUI.lua.txt",
 			"settings":
 			{
-				"buffer_size": 4313,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "Assets/XLua/Doc/faq.md",
-			"settings":
-			{
-				"buffer_size": 5664,
+				"buffer_size": 2865,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -126,11 +117,12 @@
 	},
 	"expanded_folders":
 	[
-		"/E/code/xLua/Assets/Scripts",
-		"/E/code/xLua/Assets/Scripts/Resources"
+		"/D/chenhw/code/xLua/Assets/Scripts",
+		"/D/chenhw/code/xLua/Assets/Scripts/Resources"
 	],
 	"file_history":
 	[
+		"/D/chenhw/code/xLua/Assets/XLua/Doc/faq.md",
 		"/D/chenhw/code/unity_skynet/xLua/Assets/Scripts/Resources/proto.lua.txt",
 		"/D/chenhw/code/skynet/Test.lua",
 		"/D/chenhw/code/skynet/examples/client.lua",
@@ -241,19 +233,19 @@
 			[
 				{
 					"buffer": 0,
-					"file": "Assets/Scripts/Resources/NetTest.lua.txt",
-					"semi_transient": true,
+					"file": "Assets/Scripts/Resources/DatingUI.lua.txt",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4313,
+						"buffer_size": 2865,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1223,
-								1223
+								289,
+								289
 							]
 						],
 						"settings":
@@ -265,41 +257,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 684.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "Assets/XLua/Doc/faq.md",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5664,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4713,
-								4716
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/Markdown/Markdown.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 3128.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
 					"type": "text"
 				}
 			]
