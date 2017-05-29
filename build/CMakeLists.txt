@@ -76,6 +76,21 @@ list(APPEND THIRDPART_INC  lpeg)
 set (THIRDPART_SRC ${THIRDPART_SRC} ${LPEG_SRC})
 #end lpeg
 
+#begin crypt
+set ( CRYPT_SRC
+    lua_crypt/lua-crypt.c
+    lua_crypt/lsha1.c
+)
+set_property(
+    SOURCE ${CRYPT_SRC}
+    APPEND
+    PROPERTY COMPILE_DEFINITIONS
+    LUA_LIB
+)
+list(APPEND THIRDPART_INC  crypt)
+set (THIRDPART_SRC ${THIRDPART_SRC} ${CRYPT_SRC})
+#end crypt
+
 if (USING_LUAJIT)
 	
     if (APPLE AND NOT IOS)
