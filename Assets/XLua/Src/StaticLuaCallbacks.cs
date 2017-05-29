@@ -573,6 +573,12 @@ namespace XLua
             return LuaAPI.luaopen_sproto_core(L);
         }
 
+        [MonoPInvokeCallback(typeof(LuaDLL.lua_CSFunction))]
+        internal static int LoadCrypt(RealStatePtr L)
+        {
+            return LuaAPI.luaopen_crypt(L);
+        }
+
         [MonoPInvokeCallback(typeof(LuaCSFunction))]
         internal static int LoadBuiltinLib(RealStatePtr L)
         {

@@ -104,6 +104,7 @@ namespace XLua
                 AddBuildin("rapidjson", StaticLuaCallbacks.LoadRapidJson);
                 AddBuildin("lpeg", StaticLuaCallbacks.LoadLpeg);
                 AddBuildin("sproto.core", StaticLuaCallbacks.LoadSproto);
+                AddBuildin("crypt", StaticLuaCallbacks.LoadCrypt);
 
                 LuaAPI.lua_newtable(rawL); //metatable of indexs and newindexs functions
                 LuaAPI.xlua_pushasciistring(rawL, "__index");
