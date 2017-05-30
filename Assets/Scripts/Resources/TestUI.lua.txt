@@ -14,8 +14,7 @@ function CurObj:registui()
 	end)
 
 	ButtonDisconnect:GetComponent("Button").onClick:AddListener(function()
-		fd:close()
-		Text_NetState.text = "连接断开"
+		NetMgr:disconnect()
 	end)
 
 	ButtonConnect:GetComponent("Button").onClick:AddListener(function()
@@ -26,7 +25,18 @@ function CurObj:registui()
 	end)
 
 	ButtonTest:GetComponent("Button").onClick:AddListener(function()
-		NetMgr:send_request("login", { username = "chenhw", pwd = "333" })
+		-- NetMgr:send_request("login", { username = "chenhw", pwd = "333" })
+		NetMgr:send_test()
+	end)
+
+	ButtonReconnect:GetComponent("Button").onClick:AddListener(function()
+		-- NetMgr:send_request("login", { username = "chenhw", pwd = "333" })
+		NetMgr:reconnect()
+	end)
+
+	ButtonSendNew:GetComponent("Button").onClick:AddListener(function()
+		-- NetMgr:send_request("login", { username = "chenhw", pwd = "333" })
+		NetMgr:send_test()
 	end)
 
 	ButtonReload:GetComponent("Button").onClick:AddListener(function()

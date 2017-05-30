@@ -1,6 +1,7 @@
 local socket = require "socket"
 local proto = require "proto"
 local sproto = require "sproto"
+local crypt = require "crypt"
 
 local host = sproto.new(proto.s2c):host "package"
 local request = host:attach(sproto.new(proto.c2s))
@@ -12,6 +13,14 @@ local MsgFunc = require( "MsgProcess" )
 local function send_package(fd, pack)
 	local package = string.pack(">s2", pack)
 	fd:send(package)
+end
+
+local function unpack_line(text)
+	local from = text:find("\n", 1, true)
+	if from then
+		return text:sub(1, from-1), text:sub(from+1)
+	end
+	return nil, text
 end
 
 local function unpack_package(text)
@@ -27,9 +36,11 @@ local function unpack_package(text)
 	return text:sub(3,2+s), text:sub(3+s)
 end
 
+local unpack_func = unpack_line
+
 local function recv_package(last)
 	local result
-	result, last = unpack_package(last)
+	result, last = unpack_func(last)
 	if result then
 		return result, last
 	end
@@ -38,7 +49,7 @@ local function recv_package(last)
 	if not r or (r == "")then
 		return nil, last
 	end
-	return unpack_package(last .. r)
+	return unpack_func(last .. r)
 end
 
 local session = 0
@@ -50,6 +61,13 @@ local function send_request(name, args)
 	send_package(fd, str)
 	-- print("Request:", session)
 	cacheSessions[session] = name
+end
+
+local function send_msg(v, session)
+	local size = #v + 4
+	local package = string.pack(">I2", size)..v..string.pack(">I4", session)
+	fd:send(package)
+	return v, session
 end
 
 local last = ""
@@ -77,6 +95,45 @@ local function process_response(session, args)
 	cacheSessions[session] = nil
 end
 
+local challenge, secret, result
+local clientkey
+local subid
+local token
+
+local function process_msg(t, ...)
+	if not challenge then
+		challenge = crypt.base64decode(t)
+		clientkey = crypt.randomkey()
+
+		fd:send(crypt.base64encode(crypt.dhexchange(clientkey)).."\n")
+	elseif not secret then
+		secret = crypt.dhsecret(crypt.base64decode(t), clientkey)
+
+		local hmac = crypt.hmac64(challenge, secret)
+		fd:send(crypt.base64encode(hmac).."\n")
+
+		token = {
+			server = "sample",
+			user = "hello",
+			pass = "password",
+		}
+
+		local function encode_token(token)
+			return string.format("%s@%s:%s",
+				crypt.base64encode(token.user),
+				crypt.base64encode(token.server),
+				crypt.base64encode(token.pass))
+		end
+
+		local etoken = crypt.desencode(secret, encode_token(token))
+		local b = crypt.base64encode(etoken)
+		fd:send(crypt.base64encode(etoken).."\n")
+	elseif not result then
+		result = t
+		subid = crypt.base64decode(string.sub(result, 5))
+	end
+end
+
 local function process_package(t, ...)
 	if t == "REQUEST" then
 		process_request(...)
@@ -99,6 +156,8 @@ function connectCallBack()
 	end
 end
 
+local connected = false
+local temp
 local function dispatch_package()
 	if not fd then
 		return
@@ -110,7 +169,21 @@ local function dispatch_package()
 			break
 		end
 
-		process_package(host:dispatch(v))
+		if unpack_func == unpack_line then
+			process_msg(v)
+		else
+			if connected then
+				local session = string.unpack(">I4", v, -4)
+				v = v:sub(1,-5)
+				print("AAAA", v, session)
+				process_package(host:dispatch(v))
+				return
+			end
+
+			if v == "200 OK" then
+				connected = true
+			end
+		end
 	end
 end
 
@@ -131,9 +204,39 @@ function CurObj:send_request(...)
 	send_request(...)
 end
 
+local text = "echo"
+local index = 1
+
+function CurObj:reconnect(...)
+	fd = socket.tcp()
+	fd:settimeout(0)
+	fd:connect(SERVER_IP, 8888)
+	unpack_func = unpack_package
+	last = ""
+
+	self:invoke(function ( ... )
+		if not fd then
+			return
+		end
+
+		local handshake = string.format("%s@%s#%s:%d", crypt.base64encode(token.user), crypt.base64encode(token.server),crypt.base64encode(subid) , index)
+		local hmac = crypt.hmac64(crypt.hashkey(handshake), secret)
+		send_package(fd, handshake .. ":" .. crypt.base64encode(hmac))
+		index = index + 1
+	end, 0.2, INVOKE_TYPE.DELAY)
+end
+
+function CurObj:send_test(...)
+	session = session + 1
+	send_msg("again", session)
+end
+
 function CurObj:disconnect()
 	if fd then
     	fd:close()
+    	fd = nil
+    	unpack_func = unpack_line
+    	connected = false
     end
 end
 
@@ -141,7 +244,7 @@ function CurObj:connect()
 	fd = socket.tcp()
 	fd:settimeout(0)
 	fd:connect(SERVER_IP, SERVER_PORT)
-	self:invoke(connectCallBack, 1, INVOKE_TYPE.DELAY)	
+	self:invoke(connectCallBack, 0.2, INVOKE_TYPE.DELAY)	
 end
 
 function CurObj:ondestroy()
