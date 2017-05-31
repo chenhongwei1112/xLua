@@ -2,18 +2,20 @@ local socket = require "socket"
 local proto = require "proto"
 local sproto = require "sproto"
 local crypt = require "crypt"
+local MsgFunc = require( "MsgProcess" )
 
 local host = sproto.new(proto.s2c):host "package"
 local request = host:attach(sproto.new(proto.c2s))
 
+local curObj
 local fd
-
-local MsgFunc = require( "MsgProcess" )
-
-local function send_package(fd, pack)
-	local package = string.pack(">s2", pack)
-	fd:send(package)
-end
+local logined
+local connected
+local unpack_func
+local session
+local cacheSessions
+local last
+local curServerIP, curServerPort
 
 local function unpack_line(text)
 	local from = text:find("\n", 1, true)
@@ -36,7 +38,22 @@ local function unpack_package(text)
 	return text:sub(3,2+s), text:sub(3+s)
 end
 
-local unpack_func = unpack_line
+local function reset()
+	if fd then
+		fd:close()
+		fd = nil
+	end
+
+	logined = false
+	connected = false
+	session = 0
+	last = ""
+	curServerIP 	= LOGIN_SERVER_IP
+	curServerPort 	= LOGIN_SERVER_PORT
+
+    unpack_func = unpack_line
+    cacheSessions = {}
+end
 
 local function recv_package(last)
 	local result
@@ -52,14 +69,17 @@ local function recv_package(last)
 	return unpack_func(last .. r)
 end
 
-local session = 0
+local function send_package(fd, pack)
+	local package = string.pack(">s2", pack)
+	fd:send(package)
+end
 
-local cacheSessions = {}
 local function send_request(name, args)
 	session = session + 1
-	local str = request(name, args, session)
-	send_package(fd, str)
-	-- print("Request:", session)
+	local v = request(name, args, session)
+	local size = #v + 4
+	local package = string.pack(">I2", size)..v..string.pack(">I4", session)
+	fd:send(package)
 	cacheSessions[session] = name
 end
 
@@ -69,8 +89,6 @@ local function send_msg(v, session)
 	fd:send(package)
 	return v, session
 end
-
-local last = ""
 
 local function process_request(name, args)
 	local func = MsgFunc[name]
@@ -100,7 +118,19 @@ local clientkey
 local subid
 local token
 
-local function process_msg(t, ...)
+local function loginSuccCallBack()
+	logined = true
+	curServerIP 	= MSG_SERVER_IP
+	curServerPort 	= MSG_SERVER_PORT
+	unpack_func = unpack_package
+	curObj:reconnect()
+end
+
+local function loginFailCallBack()
+	reset()
+end
+
+local function processLogin(t)
 	if not challenge then
 		challenge = crypt.base64decode(t)
 		clientkey = crypt.randomkey()
@@ -130,11 +160,41 @@ local function process_msg(t, ...)
 		fd:send(crypt.base64encode(etoken).."\n")
 	elseif not result then
 		result = t
-		subid = crypt.base64decode(string.sub(result, 5))
+
+		local code = string.sub(result, 1, 3)
+		if code == "200" then
+			print("登录成功")
+			subid = crypt.base64decode(string.sub(result, 5))
+			loginSuccCallBack()
+			return true
+		elseif code == "401" then 
+			print("登录失败：权限验证失败")
+			loginFailCallBack()
+			return false
+		elseif code == "403" then 
+			print("登录失败：禁止登录")
+			loginFailCallBack()
+			print("fffffffffffffffff", fd)
+			return false
+		elseif code == "406" then 
+			print("登录中")
+			loginFailCallBack()
+			return false
+		end
 	end
 end
 
-local function process_package(t, ...)
+local function processConnect(t)
+	if t == "200 OK" then
+		print("connect to msgserver")
+		connected = true
+	else
+		print("400 Bad Request")
+		reset()
+	end
+end
+
+local function processPackage(t, ...)
 	if t == "REQUEST" then
 		process_request(...)
 	else
@@ -143,8 +203,12 @@ local function process_package(t, ...)
 	end
 end
 
-function connectCallBack()
-	local result, err = fd:connect(SERVER_IP, SERVER_PORT)
+local function connectCallBack()
+	if not fd then
+		return
+	end
+
+	local result, err = fd:connect(curServerIP, curServerPort)
 	if result == 1.0 then
 		ObjMgr.getUI("TestUI"):changeStateText("已连接")
 	elseif err == "already connected" then
@@ -156,12 +220,11 @@ function connectCallBack()
 	end
 end
 
-local connected = false
-local temp
 local function dispatch_package()
 	if not fd then
 		return
 	end
+
 	while true do
 		local v
 		v, last = recv_package(last)
@@ -169,23 +232,20 @@ local function dispatch_package()
 			break
 		end
 
-		if unpack_func == unpack_line then
-			process_msg(v)
+		if not logined then
+			processLogin(v)
+			break
+		elseif not connected then
+			processConnect(v)
+			break	
 		else
-			if connected then
-				local session = string.unpack(">I4", v, -4)
-				v = v:sub(1,-5)
-				print("AAAA", v, session)
-				process_package(host:dispatch(v))
-				return
-			end
-
-			if v == "200 OK" then
-				connected = true
-			end
+			local session = string.unpack(">I4", v, -4)
+			v = v:sub(1,-5)
+			processPackage(host:dispatch(v))
 		end
 	end
 end
+
 
 -----------------------------------------------------------
 local XYObj = require( "XYObj" )
@@ -193,15 +253,12 @@ local CurObj = class("NetMgr", XYObj)
 
 function CurObj:ctor()
     CurObj.super.ctor(self, "NetMgr")
+    reset()
 end
 
 function CurObj:update()
 	CurObj.super.update(self)
 	dispatch_package()
-end
-
-function CurObj:send_request(...)
-	send_request(...)
 end
 
 local text = "echo"
@@ -210,7 +267,7 @@ local index = 1
 function CurObj:reconnect(...)
 	fd = socket.tcp()
 	fd:settimeout(0)
-	fd:connect(SERVER_IP, 8888)
+	fd:connect(curServerIP, curServerPort)
 	unpack_func = unpack_package
 	last = ""
 
@@ -227,8 +284,7 @@ function CurObj:reconnect(...)
 end
 
 function CurObj:send_test(...)
-	session = session + 1
-	send_msg("again", session)
+	send_request(...)
 end
 
 function CurObj:disconnect()
@@ -243,7 +299,7 @@ end
 function CurObj:connect()
 	fd = socket.tcp()
 	fd:settimeout(0)
-	fd:connect(SERVER_IP, SERVER_PORT)
+	fd:connect(curServerIP, curServerPort)
 	self:invoke(connectCallBack, 0.2, INVOKE_TYPE.DELAY)	
 end
 
@@ -251,7 +307,6 @@ function CurObj:ondestroy()
 	self:disconnect()	
 end
 ------------------------------c#中的回调-------------------------------------------------
-local curObj
 function start()
 	curObj = CurObj.new() 
 	curObj:registui()

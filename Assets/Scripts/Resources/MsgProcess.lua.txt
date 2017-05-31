@@ -13,4 +13,8 @@ MsgFunc.login = function ( args )
 	print("--------------- login --------------------", args.ok)
 end
 
+MsgFunc.testMsg = function ( args )
+	print("--------------- testMsg --------------------", args.ok)
+end
+
 return MsgFunc
