@@ -9,6 +9,7 @@ local request = host:attach(sproto.new(proto.c2s))
 
 local CHECK_TIME = 0.05
 local DISCONNECT_TIME = 1.5
+local HEART_BEAT_INTERVAL = 5
 
 local curObj
 local fd
@@ -268,6 +269,13 @@ local CurObj = class("NetMgr", XYObj)
 function CurObj:ctor()
     CurObj.super.ctor(self, "NetMgr")
     reset()
+    
+
+    self.invoke_heartbeat = self:invoke(function ()
+    	if connected then
+    		self:send_request("heartbeat", { what = "BBBB" })
+	   	end
+    end, HEART_BEAT_INTERVAL, INVOKE_TYPE.REPEAT)
 end
 
 function CurObj:update()
@@ -308,7 +316,7 @@ function CurObj:connectToMsgServer(...)
 	end, CHECK_TIME, INVOKE_TYPE.REPEAT)	
 end
 
-function CurObj:send_test(...)
+function CurObj:send_request(...)
 	send_request(...)
 end
 
