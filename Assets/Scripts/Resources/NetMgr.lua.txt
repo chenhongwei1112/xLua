@@ -60,6 +60,14 @@ local function reset()
     cacheSessions = {}
 end
 
+local function socket_send(package)
+	local result, err = fd:send(package)
+	if not result then
+		print("------------------------disconnect------------------")
+		curObj:connectToMsgServer()
+	end
+end
+
 local function recv_package(last)
 	local result
 	result, last = unpack_func(last)
@@ -76,7 +84,7 @@ end
 
 local function send_package(fd, pack)
 	local package = string.pack(">s2", pack)
-	fd:send(package)
+	socket_send(package)
 end
 
 local function send_request(name, args)
@@ -84,14 +92,14 @@ local function send_request(name, args)
 	local v = request(name, args, session)
 	local size = #v + 4
 	local package = string.pack(">I2", size)..v..string.pack(">I4", session)
-	fd:send(package)
+	socket_send(package)
 	cacheSessions[session] = name
 end
 
 local function send_msg(v, session)
 	local size = #v + 4
 	local package = string.pack(">I2", size)..v..string.pack(">I4", session)
-	fd:send(package)
+	socket_send(package)
 	return v, session
 end
 
@@ -144,12 +152,12 @@ local function processLogin(t)
 		challenge = crypt.base64decode(t)
 		clientkey = crypt.randomkey()
 
-		fd:send(crypt.base64encode(crypt.dhexchange(clientkey)).."\n")
+		socket_send(crypt.base64encode(crypt.dhexchange(clientkey)).."\n")
 	elseif not secret then
 		secret = crypt.dhsecret(crypt.base64decode(t), clientkey)
 
 		local hmac = crypt.hmac64(challenge, secret)
-		fd:send(crypt.base64encode(hmac).."\n")
+		socket_send(crypt.base64encode(hmac).."\n")
 
 		token = {
 			server = "sample",
@@ -166,7 +174,7 @@ local function processLogin(t)
 
 		local etoken = crypt.desencode(secret, encode_token(token))
 		local b = crypt.base64encode(etoken)
-		fd:send(crypt.base64encode(etoken).."\n")
+		socket_send(crypt.base64encode(etoken).."\n")
 	elseif not result then
 		result = t
 
