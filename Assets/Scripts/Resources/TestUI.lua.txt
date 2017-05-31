@@ -18,7 +18,7 @@ function CurObj:registui()
 	end)
 
 	ButtonConnect:GetComponent("Button").onClick:AddListener(function()
-		NetMgr:connect()
+		NetMgr:connectToLoginServer()
 	end)
 
 	ButtonRecv:GetComponent("Button").onClick:AddListener(function()
@@ -31,7 +31,7 @@ function CurObj:registui()
 
 	ButtonReconnect:GetComponent("Button").onClick:AddListener(function()
 		-- NetMgr:send_request("login", { username = "chenhw", pwd = "333" })
-		NetMgr:reconnect()
+		NetMgr:connectToMsgServer()
 	end)
 
 	ButtonSendNew:GetComponent("Button").onClick:AddListener(function()

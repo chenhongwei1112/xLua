@@ -2,10 +2,13 @@ local socket = require "socket"
 local proto = require "proto"
 local sproto = require "sproto"
 local crypt = require "crypt"
-local MsgFunc = require( "MsgProcess" )
+local MsgFunc = require "MsgProcess"
 
 local host = sproto.new(proto.s2c):host "package"
 local request = host:attach(sproto.new(proto.c2s))
+
+local CHECK_TIME = 0.05
+local DISCONNECT_TIME = 1.5
 
 local curObj
 local fd
@@ -16,6 +19,7 @@ local session
 local cacheSessions
 local last
 local curServerIP, curServerPort
+local curRetryTime
 
 local function unpack_line(text)
 	local from = text:find("\n", 1, true)
@@ -48,6 +52,7 @@ local function reset()
 	connected = false
 	session = 0
 	last = ""
+	curRetryTime = 0
 	curServerIP 	= LOGIN_SERVER_IP
 	curServerPort 	= LOGIN_SERVER_PORT
 
@@ -123,7 +128,11 @@ local function loginSuccCallBack()
 	curServerIP 	= MSG_SERVER_IP
 	curServerPort 	= MSG_SERVER_PORT
 	unpack_func = unpack_package
-	curObj:reconnect()
+	
+	fd:close()
+	fd = nil
+
+	curObj:connectToMsgServer()
 end
 
 local function loginFailCallBack()
@@ -166,27 +175,22 @@ local function processLogin(t)
 			print("登录成功")
 			subid = crypt.base64decode(string.sub(result, 5))
 			loginSuccCallBack()
-			return true
 		elseif code == "401" then 
 			print("登录失败：权限验证失败")
 			loginFailCallBack()
-			return false
 		elseif code == "403" then 
 			print("登录失败：禁止登录")
 			loginFailCallBack()
-			print("fffffffffffffffff", fd)
-			return false
 		elseif code == "406" then 
 			print("登录中")
 			loginFailCallBack()
-			return false
 		end
 	end
 end
 
 local function processConnect(t)
 	if t == "200 OK" then
-		print("connect to msgserver")
+		print("login to msgserver succ")
 		connected = true
 	else
 		print("400 Bad Request")
@@ -203,20 +207,22 @@ local function processPackage(t, ...)
 	end
 end
 
-local function connectCallBack()
+local function connectCheckCallBack()
 	if not fd then
-		return
+		return 5
 	end
 
 	local result, err = fd:connect(curServerIP, curServerPort)
 	if result == 1.0 then
-		ObjMgr.getUI("TestUI"):changeStateText("已连接")
+		return 1
 	elseif err == "already connected" then
-		ObjMgr.getUI("TestUI"):changeStateText("已连接")
+		return 2
 	elseif err == "timeout" then
-		ObjMgr.getUI("TestUI"):changeStateText("连接超时")
+		return 3
 	elseif err == "Operation already in progress" then
-		ObjMgr.getUI("TestUI"):changeStateText("连接中")
+		return 4
+	else
+		return 5
 	end
 end
 
@@ -264,23 +270,34 @@ end
 local text = "echo"
 local index = 1
 
-function CurObj:reconnect(...)
+function CurObj:connectToMsgServer(...)
 	fd = socket.tcp()
 	fd:settimeout(0)
 	fd:connect(curServerIP, curServerPort)
 	unpack_func = unpack_package
 	last = ""
+	curRetryTime = 0
 
-	self:invoke(function ( ... )
-		if not fd then
-			return
+	self.invoke_conMsg = self:invoke(function ()
+		if connectCheckCallBack() > 2 then
+			curRetryTime = curRetryTime + CHECK_TIME
+			if curRetryTime > DISCONNECT_TIME then
+				print("network error:can not  connet to msgserver")
+				fd:close()
+				fd = nil
+
+				self:removeInvoke(self.invoke_conMsg)
+			end
+		else
+			print("connet connet to msgserver succ")
+			local handshake = string.format("%s@%s#%s:%d", crypt.base64encode(token.user), crypt.base64encode(token.server),crypt.base64encode(subid) , index)
+			local hmac = crypt.hmac64(crypt.hashkey(handshake), secret)
+			send_package(fd, handshake .. ":" .. crypt.base64encode(hmac))
+			index = index + 1
+
+			self:removeInvoke(self.invoke_conMsg)
 		end
-
-		local handshake = string.format("%s@%s#%s:%d", crypt.base64encode(token.user), crypt.base64encode(token.server),crypt.base64encode(subid) , index)
-		local hmac = crypt.hmac64(crypt.hashkey(handshake), secret)
-		send_package(fd, handshake .. ":" .. crypt.base64encode(hmac))
-		index = index + 1
-	end, 0.2, INVOKE_TYPE.DELAY)
+	end, CHECK_TIME, INVOKE_TYPE.REPEAT)	
 end
 
 function CurObj:send_test(...)
@@ -291,16 +308,31 @@ function CurObj:disconnect()
 	if fd then
     	fd:close()
     	fd = nil
-    	unpack_func = unpack_line
     	connected = false
     end
 end
 
-function CurObj:connect()
+function CurObj:connectToLoginServer()
 	fd = socket.tcp()
 	fd:settimeout(0)
 	fd:connect(curServerIP, curServerPort)
-	self:invoke(connectCallBack, 0.2, INVOKE_TYPE.DELAY)	
+	curRetryTime = 0
+
+	self.invoke_conLogin = self:invoke(function ()
+		if connectCheckCallBack() > 2 then
+			curRetryTime = curRetryTime + CHECK_TIME
+			if curRetryTime > DISCONNECT_TIME then
+				print("network error:can not connect to loginserver")
+				fd:close()
+				fd = nil
+
+				self:removeInvoke(self.invoke_conLogin)
+			end
+		else
+			print("connet connet to loginserver succ")
+			self:removeInvoke(self.invoke_conLogin)
+		end
+	end, CHECK_TIME, INVOKE_TYPE.REPEAT)	
 end
 
 function CurObj:ondestroy()
