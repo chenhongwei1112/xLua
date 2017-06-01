@@ -60,6 +60,17 @@ public class LuaBehaviour : MonoBehaviour {
         {
             luaAwake();
         }
+
+        luaEnv.AddLoader((ref string filename) =>
+        {
+            var result = ABMgr.GetLuaContent(filename + ".lua");
+            if (result)
+            {
+                return result.bytes;
+            }
+
+            return null;
+        });
     }
 
 	// Use this for initialization
