@@ -1,8 +1,10 @@
 local XYObj = require( "XYObj" )
 local CurObj = class("CurObj", XYObj)
 
+local CSharpObj = self
+
 function CurObj:ctor()
-    CurObj.super.ctor(self, "TestUI")
+    CurObj.super.ctor(self, "TestUI", CSharpObj)
 end
 
 function CurObj:registui()
@@ -44,6 +46,11 @@ function CurObj:registui()
 		local ABMgr = GameObject.Find('ABMgr'):GetComponent("ABMgr")
 		ABMgr:LoadAssetBundle()
 	end)
+
+	self.transform:Find("TestLuaAB"):GetComponent("Button").onClick:AddListener(function()
+		print("333333333333333333333333333333333333333")
+	end)
+
 end
 
 function CurObj:changeStateText(str)

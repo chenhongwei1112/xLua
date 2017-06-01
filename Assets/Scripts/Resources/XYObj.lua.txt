@@ -3,7 +3,8 @@ require "init"
 
 local CurObj = class("XYObj")
 
-function CurObj:ctor(CurObjName)
+function CurObj:ctor(CurObjName, csharpObj)
+	inserMetaIndex(self, csharpObj)
 	self.invoke_list = {}
 	ObjMgr.addUI(CurObjName, self)
 end

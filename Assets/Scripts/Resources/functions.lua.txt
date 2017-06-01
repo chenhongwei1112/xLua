@@ -341,6 +341,23 @@ function class(classname, super)
     return cls
 end
 
+function inserMetaIndex(tbl, indexTbl)
+    local new_meta = {}
+    local origin_meta = getmetatable(tbl)
+
+    new_meta.__index = function (table, key)
+        if indexTbl[key] then
+            return indexTbl[key]
+        elseif type(origin_meta.__index) == "function" then
+            return origin_meta.__index(table, key)
+        elseif type(origin_meta.__index) == "table" then
+            return origin_meta.__index[key]
+        end
+    end
+
+    setmetatable(tbl, new_meta)
+end
+
 --[[--
 
 如果对象是指定类或其子类的实例，返回 true，否则返回 false

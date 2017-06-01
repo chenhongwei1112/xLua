@@ -265,9 +265,10 @@ end
 -----------------------------------------------------------
 local XYObj = require( "XYObj" )
 local CurObj = class("NetMgr", XYObj)
+local CSharpObj = self
 
 function CurObj:ctor()
-    CurObj.super.ctor(self, "NetMgr")
+    CurObj.super.ctor(self, "NetMgr", CSharpObj)
     reset()
     
 
