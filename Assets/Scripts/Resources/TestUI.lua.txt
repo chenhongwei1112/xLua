@@ -2,7 +2,6 @@ local XYObj = require( "XYObj" )
 local CurObj = class("CurObj", XYObj)
 
 local CSharpObj = self
-
 function CurObj:ctor()
     CurObj.super.ctor(self, "TestUI", CSharpObj)
 end

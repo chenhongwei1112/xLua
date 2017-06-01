@@ -1,19 +1,20 @@
 local XYObj = require( "XYObj" )
 local CurObj = class("LoginUI", XYObj)
 
+local CSharpObj = self
 function CurObj:ctor()
-    CurObj.super.ctor(self, "LoginUI")
+    CurObj.super.ctor(self, "LoginUI", CSharpObj)
 end
 
 function CurObj:registui()
-	self.Button = ButtonLogin:GetComponent("Button")
+	self.Button = self.transform:Find("ButtonLogin"):GetComponent("Button")
 	self.Button.onClick:AddListener(function()
 		print("3333333333333333333333".."ButtonSetting")
 
 		CS.UnityEngine.SceneManagement.SceneManager.LoadScene("Dating")
 	end)
 
-	UserNote:GetComponent("Toggle").onValueChanged:AddListener(function(value)
+	self.transform:Find("UserNote"):GetComponent("Toggle").onValueChanged:AddListener(function(value)
 		self.Button.interactable = value
 	end)
 

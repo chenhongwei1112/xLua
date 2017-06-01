@@ -1,13 +1,13 @@
 local XYObj = require( "XYObj" )
 local CurObj = class("DatingUI", XYObj)
 
+local CSharpObj = self
 function CurObj:ctor()
+    CurObj.super.ctor(self, "DatingUI", CSharpObj)
+	
 	self.mMoveSpeed = 60
-
 	self.ZouMgsList = {}
 	self.curIndex = 0
-
-    CurObj.super.ctor(self, "DatingUI")
 end
 
 function CurObj:registui()
