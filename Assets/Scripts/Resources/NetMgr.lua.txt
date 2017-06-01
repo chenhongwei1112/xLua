@@ -21,6 +21,7 @@ local cacheSessions
 local last
 local curServerIP, curServerPort
 local curRetryTime
+local index
 
 local function unpack_line(text)
 	local from = text:find("\n", 1, true)
@@ -54,6 +55,7 @@ local function reset()
 	session = 0
 	last = ""
 	curRetryTime = 0
+	index = 1
 	curServerIP 	= LOGIN_SERVER_IP
 	curServerPort 	= LOGIN_SERVER_PORT
 
@@ -284,8 +286,7 @@ function CurObj:update()
 	dispatch_package()
 end
 
-local text = "echo"
-local index = 1
+
 
 function CurObj:connectToMsgServer(...)
 	fd = socket.tcp()
