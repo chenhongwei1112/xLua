@@ -61,97 +61,18 @@ foobar 7 {
     what 0 : string
   }
   response {
-    ok 0 : integer
+    ok 0 : boolean
   }
 }
 
-login 8 {
+heartbeat 8 {
   request {
-   username 0 : string
-   pwd 1 : string
+    what 0 : string
   }
   response {
-   ok 0 : boolean
-   msg 1 : string
+    ok 0 : boolean
   }
 }
-
-login2 9 {
-  request {
-    account 0 : string
-  }
-  response {
-    result 0 : boolean
-    info 1 : string
-    id 2 : integer
-    card_num 3 : integer
-  }
-}
-
-register 10 {
-  request {
-    account 0 : string
-  }
-  response {
-    result 0 : boolean
-    info 1 : string
-  }
-}
-
-create_room 11 {
-  request {
-    room_passwd 0 : integer
-    num_of_game 1 : integer
-    hu_type   2 : integer
-    ding_pao  3 : integer
-    qiang_gang  4 : boolean
-    have_hun  5 : boolean
-    gang_fen  6 : boolean
-    sevendui_2  7 : boolean
-    gangkai_2   8 : boolean
-  }
-  response {
-    result 0 : boolean
-    info 1 : string
-    room_id 2 : integer
-  }
-}
-
-join_room 12 {
-  request {
-    room_id 0 : integer
-    room_passwd 1 : integer
-  }
-  response {
-    result 0 : boolean
-    info 1 : string
-  }
-}
-
-ready 13 {}
-
-cancel_ready 14 {}
-
-xiapao 15 {
-  request {
-    num 0 : integer
-  }
-}
-
-out_mj 16 {
-  request {
-    mj_id 0 : integer
-  }
-}
-
-pass 17 {}
-
-peng 18 {}
-
-ming_gang 19 {}
-
-hu 20 {}
-
 
 ]]
 
@@ -161,87 +82,6 @@ proto.s2c = sprotoparser.parse [[
   session 1 : integer
 }
 
-heartbeat 1 {}
-
-create_room_succ 2 {
-  request {
-    result 0 : integer
-    room_id 1 : integer
-  }
-}
-
-player_join 3 {
-  request {
-    id 0 : integer
-    account 1 : string
-  }
-}
-
-player_ready 4 {
-  request {
-    id 0 : integer
-  }
-}
-
-player_cancel_ready 5 {
-  request {
-    id 0 : integer
-  }
-}
-
-xiapao 6 {}
-
-begin_game 7 {
-  request {
-    banker_id 0 : integer
-    mj_ids 1 : *integer
-  }
-}
-
-# 发牌
-deal 8 {
-  request {
-    accepter 0 : integer
-    mj_id 1 : integer
-    has_hu 2 : boolean
-    has_an_gang 3 : *integer  #可能有多个暗杠
-  }
-}
-
-player_out_mj 9 {
-  request {
-    player_id 0 : integer
-    mj_id 1 : integer
-    has_hu 2 : boolean
-    has_ming_gang 3 : boolean
-    has_peng 4 : boolean
-  }
-}
-
-player_peng 10 {
-  request {
-    p_id 0 : integer
-    mj_id 1 : integer
-  }
-}
-
-player_ming_gang 11 {
-  request {
-    p_id 0 : integer
-    mj_id 1 : integer
-  }
-}
-
-.HuPlayer {
-  id 0 : integer
-  mjs 1 : *integer
-}
-
-hu 12 {
-  request {
-    hu_players 0 : *HuPlayer
-  }
-}
 ]]
 
 return proto

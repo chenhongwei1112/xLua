@@ -5,7 +5,7 @@ MsgFunc.heartbeat = function ( args )
 end
 
 MsgFunc.foobar = function ( args )
-	print("--------------- foobar --------------------")
+	print("--------------- foobar --------------------", args.ok)
 	ObjMgr.getUI("TestUI"):changeDataText("foobar")
 end
 

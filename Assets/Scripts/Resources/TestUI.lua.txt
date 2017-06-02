@@ -27,7 +27,8 @@ function CurObj:registui()
 
 	ButtonTest:GetComponent("Button").onClick:AddListener(function()
 		-- NetMgr:send_request("login", { username = "chenhw", pwd = "333" })
-		NetMgr:send_request("foobar", { what = "BBBB" })
+		-- NetMgr:send_request("foobar", { what = "BBBB" })
+		print('InMemory.ccc=', require('Test001').ccc)
 	end)
 
 	ButtonReconnect:GetComponent("Button").onClick:AddListener(function()
