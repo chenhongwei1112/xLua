@@ -785,6 +785,7 @@ namespace CSObjectWrapEditor
                 bool ignoreNotPublic = hotfixType.HasFlag(HotfixFlag.IgnoreNotPublic);
                 //ignoreProperty = true;
                 hotfxDelegates.AddRange(type.GetMethods(bindingAttrOfMethod)
+                    .Where(method => method.GetMethodBody() != null)
                     .Where(method => !method.Name.Contains("<"))
                     .Where(method => !ignoreNotPublic || method.IsPublic)
                     .Where(method => !ignoreProperty || !method.IsSpecialName || (!method.Name.StartsWith("get_") && !method.Name.StartsWith("set_")))
@@ -803,6 +804,7 @@ namespace CSObjectWrapEditor
                 bool ignoreNotPublic = kv.Value.HasFlag(HotfixFlag.IgnoreNotPublic);
                 //ignoreProperty = true;
                 hotfxDelegates.AddRange(kv.Key.GetMethods(bindingAttrOfMethod)
+                    .Where(method => method.GetMethodBody() != null)
                     .Where(method => !method.Name.Contains("<"))
                     .Where(method => !ignoreNotPublic || method.IsPublic)
                     .Where(method => !ignoreProperty || !method.IsSpecialName || (!method.Name.StartsWith("get_") && !method.Name.StartsWith("set_")))
@@ -823,7 +825,6 @@ namespace CSObjectWrapEditor
             GenOne(typeof(DelegateBridge), (type, type_info) =>
             {
                 type_info.Set("delegates_groups", delegates_groups.ToList());
-                type_info.Set("hotfx_delegates", hotfxDelegates);
             }, templateRef.LuaDelegateBridge, textWriter);
             textWriter.Close();
         }
@@ -897,10 +898,13 @@ namespace CSObjectWrapEditor
 #if !XLUA_GENERAL
         static void clear(string path)
         {
-            System.IO.Directory.Delete(path, true);
-            AssetDatabase.DeleteAsset(path.Substring(path.IndexOf("Assets") + "Assets".Length));
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+                AssetDatabase.DeleteAsset(path.Substring(path.IndexOf("Assets") + "Assets".Length));
 
-            AssetDatabase.Refresh();
+                AssetDatabase.Refresh();
+            }
         }
 #endif
 
@@ -1324,6 +1328,8 @@ namespace CSObjectWrapEditor
             luaenv.DoString("require 'TemplateCommon'");
             var gen_push_types_setter = luaenv.Global.Get<LuaFunction>("SetGenPushAndUpdateTypes");
             gen_push_types_setter.Call(GCOptimizeList.Where(t => !t.IsPrimitive && SizeOf(t) != -1).Concat(LuaCallCSharp.Where(t => t.IsEnum)).Distinct().ToList());
+            var xlua_classes_setter = luaenv.Global.Get<LuaFunction>("SetXLuaClasses");
+            xlua_classes_setter.Call(Utils.GetAllTypes().Where(t => t.Namespace == "XLua").ToList());
             GenDelegateBridges(all_types);
             GenEnumWraps();
             GenCodeForClass();
@@ -1353,6 +1359,8 @@ namespace CSObjectWrapEditor
             luaenv.DoString("require 'TemplateCommon'");
             var gen_push_types_setter = luaenv.Global.Get<LuaFunction>("SetGenPushAndUpdateTypes");
             gen_push_types_setter.Call(GCOptimizeList.Where(t => !t.IsPrimitive && SizeOf(t) != -1).Concat(LuaCallCSharp.Where(t => t.IsEnum)).Distinct().ToList());
+            var xlua_classes_setter = luaenv.Global.Get<LuaFunction>("SetXLuaClasses");
+            xlua_classes_setter.Call(Utils.GetAllTypes().Where(t => t.Namespace == "XLua").ToList());
             GenDelegateBridges(Utils.GetAllTypes(false));
             GenEnumWraps();
             GenCodeForClass();
@@ -1414,7 +1422,7 @@ namespace CSObjectWrapEditor
                 if (parameterType.IsGenericParameter)
                 {
                     var parameterConstraints = parameterType.GetGenericParameterConstraints();
-                    if (parameterConstraints.Length == 0 || !parameterConstraints[0].IsClass)
+                    if (parameterConstraints.Length == 0 || !parameterConstraints[0].IsClass || hasGenericParameter(parameterConstraints[0]))
                         return false;
                     hasValidGenericParameter = true;
                 }

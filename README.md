@@ -1,7 +1,7 @@
 ![](Assets/XLua/Doc/xLua.png)
 
 [![license](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Tencent/xLua/blob/master/LICENSE.TXT)
-[![release](https://img.shields.io/badge/release-v2.1.7-blue.svg)](https://github.com/Tencent/xLua/releases)
+[![release](https://img.shields.io/badge/release-v2.1.8-blue.svg)](https://github.com/Tencent/xLua/releases)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](https://github.com/Tencent/xLua/pulls)
 
 ## C#下Lua编程支持
@@ -93,11 +93,12 @@ Debug.Log("max:" + max(32, 12));
 * [08_Hotfix](Assets/XLua/Examples/08_Hotfix/): 热补丁的示例（需要开启热补丁特性，如何开启请看[指南](Assets/XLua/Doc/hotfix.md)）。
 * [09_GenericMethod](Assets/XLua/Examples/09_GenericMethod/): 泛化函数支持的演示。
 * [10_SignatureLoader](Assets/XLua/Examples/10_SignatureLoader/): 展示如何读取经数字签名的lua脚本，参见[数字签名](Assets/XLua/Doc/signature.md)的文档介绍。
+* [11_RawObject](Assets/XLua/Examples/11_RawObject/): 当C#参数是object时，如何把一个lua number指定以boxing后的int传递过去。
  
 ## 文档
 
 * [XLua教程.doc](Assets/XLua/Doc/XLua教程.doc)：教程，其配套代码[这里](Assets/XLua/Tutorial/)。
-* [XLua的配置.doc](Assets/XLua/Doc/XLua的配置.doc)：介绍如何配置xLua。
+* [XLua的配置](Assets/XLua/Doc/configure.md)：介绍如何配置xLua。
 * [XLua增加删除第三方lua库.doc](Assets/XLua/Doc/XLua增加删除第三方lua库.doc)：如何增删第三方lua扩展库。
 * [XLua API.doc](Assets/XLua/Doc/XLua_API.doc)：API文档。
 * [生成引擎二次开发指南](Assets/XLua/Doc/custom_generate.md)：介绍如何做生成引擎的二次开发。
